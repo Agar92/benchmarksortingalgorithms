@@ -21,19 +21,19 @@
 
 Для компиляции кода cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_GPU.cu на GPU NVIDIA Tesla V100-SXM2-32GB (compute capability 7.0) использовать:
 
-`nvcc -arch=compute_70 -code=sm_70 -O3  --use_fast_math --expt-extended-lambda cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_GPU.cu -o cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_GPU` :v:
+`$nvcc -arch=compute_70 -code=sm_70 -O3  --use_fast_math --expt-extended-lambda cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_GPU.cu -o cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_GPU` :v:
 
 Для компиляции кода cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_CPU.cu на 64-ядерном СPU Intel Xeon Gold 6242 (2.8GHz) компилятором nvcc использовать:
 
-`nvcc -std=c++17 -O3 --extended-lambda -Xcompiler -fopenmp cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_CPU.cu -o cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_bin___on_CPU` :v:
+`$nvcc -std=c++17 -O3 --extended-lambda -Xcompiler -fopenmp cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_CPU.cu -o cuda_sort4_thrust_Nbins_standard_sort_in_each_bin___on_bin___on_CPU` :v:
 
 Для компиляции кода test_nvc++_stdpar_gpu_sorting.cpp на 64-ядерном СPU Intel Xeon Gold 6242 (2.8GHz) для запуска на GPU NVIDIA Tesla V100-SXM2-32GB компилятором nvc++ NVIDIA HPC SDK использовать:
 
-`nvc++ -stdpar=gpu -O3 test_nvc++_stdpar_gpu_sorting.cpp -o test_nvc++_stdpar_gpu_sorting` :v:
+`$nvc++ -stdpar=gpu -O3 test_nvc++_stdpar_gpu_sorting.cpp -o test_nvc++_stdpar_gpu_sorting` :v:
 
 Для компиляции кода cuda_cub_radix_sort_pairs.cu для запуска на GPU NVIDIA Tesla V100-SXM2-32GB компилятором nvcc использовать:
 
-`nvcc -arch=sm_70 -O0 cuda_cub_radix_sort_pairs.cu -o cuda_cub_radix_sort_pairs` :v:
+`$nvcc -arch=sm_70 -O0 cuda_cub_radix_sort_pairs.cu -o cuda_cub_radix_sort_pairs` :v:
 
 Опция `-extended-lambda` нужна для того, чтобы лямбда-функции были доступны внутри `thrust::sort`.
 
