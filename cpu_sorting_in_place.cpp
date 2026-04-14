@@ -558,15 +558,15 @@ Key Features of the Implementation:
 
 1. Three-Phase Design:
 
--� Phase 1: Each thread sorts its subarray and counts 0s, 1s, 2s, 3s
--� Phase 2: Calculate write offsets based on counts (prefix sums)
--� Phase 3: Copy sorted blocks to output using calculated offsets
+-· Phase 1: Each thread sorts its subarray and counts 0s, 1s, 2s, 3s
+-· Phase 2: Calculate write offsets based on counts (prefix sums)
+-· Phase 3: Copy sorted blocks to output using calculated offsets
 
 2. Efficient Memory Usage:
 
--� Each thread works on its own subarray copy
--� Uses memcpy for bulk memory transfers
--� No locks during the parallel copy phase
+-· Each thread works on its own subarray copy
+-· Uses memcpy for bulk memory transfers
+-· No locks during the parallel copy phase
 
 3. Thread-Safe Offset Calculation:
 
@@ -584,9 +584,9 @@ size_t chunk_size = base_chunk_size + (i < remainder ? 1 : 0);
 
 5. Verification Functions:
 
-· Checks that output is sorted
-· Verifies all values are 0-3
-· Ensures input and output counts match
+Â· Checks that output is sorted
+Â· Verifies all values are 0-3
+Â· Ensures input and output counts match
 
 Compilation and Usage:
 
