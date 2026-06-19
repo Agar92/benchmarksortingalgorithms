@@ -15,6 +15,8 @@ using std::endl;
 // $ g++ -std=c++17 -O3 -pthread -fopenmp parallel_sort.cpp -o parallel_sort
 //
 
+constexpr int Nbin=2048; 
+
 struct double3{
   float x, y, z;
 };
@@ -58,7 +60,7 @@ private:
     std::vector<size_t> bin_sizes_;
     std::vector<size_t> shift;//
 public:
-  ParallelSorter(std::vector<P>& input, size_t num_threads = std::thread::hardware_concurrency())
+  ParallelSorter(std::vector<P>& input, size_t num_threads = Nbin/*std::thread::hardware_concurrency()*/)
         : input_(input), n_(input.size()), num_threads_(num_threads) {
         output_.resize(n_);
 
@@ -367,18 +369,20 @@ public:
         #pragma omp parallel
         {
           #pragma omp single
-            num_threads = omp_get_num_threads();
+          num_threads = Nbin;//omp_get_num_threads();
         }
         std::vector<std::array<size_t, 4>> counts(num_threads);
         std::vector<std::array<size_t, 4>> offsets(num_threads);
         // Phase 1: Sort subarrays and count (parallel)
-        #pragma omp parallel
+      #pragma omp parallel for
+        for(int tid=0; tid<num_threads; ++tid)
         {
-            int tid = omp_get_thread_num();
+          //int tid = omp_get_thread_num();
             size_t chunk_size = n_ / num_threads;
             size_t remainder = n_ % num_threads;
             size_t start_idx = tid * chunk_size + std::min(tid, (int)remainder);
             size_t end_idx = start_idx + chunk_size + (tid < remainder ? 1 : 0);
+            //cout<<"tid="<<tid<<endl;
             std::sort(input_.data()+start_idx, input_.data()+end_idx);
             for(int j=0; j<(end_idx-start_idx); ++j)
             {
@@ -429,9 +433,10 @@ public:
         */
 
         // Phase 3: Copy blocks (parallel)
-        #pragma omp parallel
+      #pragma omp parallel for
+        for(int tid=0; tid<num_threads; ++tid)
         {
-            int tid = omp_get_thread_num();
+          //int tid = omp_get_thread_num();
             size_t chunk_size = n_ / num_threads;
             size_t remainder = n_ % num_threads;
             size_t start_idx = tid * chunk_size + std::min(tid, (int)remainder);
@@ -481,7 +486,9 @@ std::vector<P> sequential_sort(const std::vector<P>& input) {
 
 int main() {
     // Test with different sizes
-  std::vector<size_t> test_sizes = {1'000, 10'000, 100'000, 1'000'000, 10'000'000, 20'000'000};
+  std::vector<size_t> test_sizes = {
+/*1'000, 10'000, 100'000, 1'000'000, 10'000'000, */
+20'000'000};
 
     for (size_t size : test_sizes) {
         std::cout << "\n=== Testing with size " << size << " ===" << std::endl;
@@ -505,7 +512,6 @@ int main() {
         */
         auto end_seq = std::chrono::high_resolution_clock::now();
         auto seq_duration = std::chrono::duration_cast<std::chrono::microseconds>(end_seq - start_seq);
-
         // Run parallel sort
         ParallelSorter sorter(input);
         auto par_result = sorter.sort();
@@ -515,7 +521,6 @@ int main() {
         for(int i=0; i<par_result.size(); ++i) cout<<par_result[i].ir<<" ";
         cout<<endl;
         */
-
         // Verify results
         if (sorter.verify()) {
             std::cout << "Verification passed!" << std::endl;
@@ -529,7 +534,6 @@ int main() {
         } else {
             std::cout << "Results differ from sequential sort!" << std::endl;
         }
-
         std::cout << "Sequential time: " << seq_duration.count() << " microseconds" << std::endl;
 
     ////#ifdef _OPENMP
@@ -584,9 +588,9 @@ size_t chunk_size = base_chunk_size + (i < remainder ? 1 : 0);
 
 5. Verification Functions:
 
-Â· Checks that output is sorted
-Â· Verifies all values are 0-3
-Â· Ensures input and output counts match
+- Checks that output is sorted
+- Verifies all values are 0-3
+- Ensures input and output counts match
 
 Compilation and Usage:
 
